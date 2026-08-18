@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { InjectConnection, MongooseModule } from "@nestjs/mongoose";
 import { Connection } from 'mongoose';
 
+
+// dev port yoki production port daligini bilish uchun
 @Module({
     imports: [
         MongooseModule.forRootAsync({
@@ -12,6 +14,8 @@ import { Connection } from 'mongoose';
     ],
     exports: [MongooseModule],
 })
+
+// faqat console da chiqishi uchun 
 export class DatabaseModule {
     constructor(@InjectConnection() private readonly connection: Connection){
         if (connection.readyState === 1) {

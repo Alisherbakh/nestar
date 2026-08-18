@@ -7,7 +7,7 @@ export class Member{
     @Field(() => String)
     _id: ObjectId | undefined;
 
-    @Field(() => MemberType)
+    @Field(() => MemberType) // graphQl ucchun type
     memberType: MemberType | undefined;
 
     @Field(() => MemberStatus)
@@ -24,16 +24,16 @@ export class Member{
 
     memberPassword?: string;
 
-    @Field(() => String, {nullable: true})
+    @Field(() => String, {nullable: true}) // bolishi ham mumkun, bolmasligi ham
     memberFullName?: string;
 
     @Field(() => String)
     memberImage: string | undefined;
 
-    @Field(() => String, {nullable: true})
+    @Field(() => String, {nullable: true}) // bolishi ham mumkun, bolmasligi ham
     memberAddress?: string;
 
-    @Field(() => String, {nullable: true})
+    @Field(() => String, {nullable: true}) // bolishi ham mumkun, bolmasligi ham
     memberDesc?: string;
 
     @Field(() => Int)

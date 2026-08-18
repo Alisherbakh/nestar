@@ -8,6 +8,7 @@ import { Message } from '../../libs/enums/common.enum';
 
 @Injectable()
 export class MemberService {
+    // memberSchema model integratsiyasi step-2
     constructor(@InjectModel('Member') private readonly memberModel: Model<Member>) {}
    
     public async signup(input: MemberInput): Promise<Member> {

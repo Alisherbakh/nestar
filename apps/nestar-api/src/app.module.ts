@@ -10,15 +10,15 @@ import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    GraphQLModule.forRoot({
+    ConfigModule.forRoot(), // .env configuratsiyasi
+    GraphQLModule.forRoot({ // graphql api integratsiyasi
       driver: ApolloDriver,
       playground: true,
       uploads: false,
       autoSchemaFile: true,
     }),
-    ComponentsModule,
-    DatabaseModule,
+    ComponentsModule, // component model calling Http
+    DatabaseModule,   // database calling.       TCP
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],
