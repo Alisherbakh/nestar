@@ -20,7 +20,7 @@ import { DatabaseModule } from './database/database.module';
     ComponentsModule, // component model calling Http
     DatabaseModule,   // database calling.       TCP
   ],
-  controllers: [AppController],
+  controllers: [AppController],    // Health check mantiq lari yoziladi( hatosiz ishlayabdimi yoqmi project)
   providers: [AppService, AppResolver],
 })
 export class AppModule {}
