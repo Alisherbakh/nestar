@@ -17,7 +17,7 @@ import { T } from './libs/types/common';
       playground: true,
       uploads: false,
       autoSchemaFile: true,
-      formatError: (error: T) => {
+      formatError: (error: T) => { // Global Error Handiling
         const graphQLFormattedError = {
           code: error?.extensions.code  ,
           message: 
@@ -31,6 +31,6 @@ import { T } from './libs/types/common';
     DatabaseModule,   // database calling.       TCP
   ],
   controllers: [AppController],    // Health check mantiq lari yoziladi( hatosiz ishlayabdimi yoqmi project)
-  providers: [AppService, AppResolver],
+  providers: [AppService, AppResolver], // Rest Api
 })
 export class AppModule {}
