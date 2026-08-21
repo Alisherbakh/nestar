@@ -9,7 +9,7 @@ export class LoggingInterceptor implements NestInterceptor {
     private readonly logger: Logger = new Logger();
    // kirdi chiqdi malumotlarni terminalga chiroyli chiqarish mumkun Logger
 
-
+                                                       // reactive functional programmingn(Promise ga oxshash mantig')
   public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const recordTime = Date.now(); // kirib kelgan vaqti
     const requestType = context.getType<GqlContextType>(); // kirib kelgan requestlarni typeni aniqlash uchun
@@ -17,10 +17,11 @@ export class LoggingInterceptor implements NestInterceptor {
 
     if (requestType === 'http'){
         /*  Develop if needed */
+        return next.handle();
     } else if (requestType === 'graphql'){
         /* (1) Print Request */
 
-        const gqlContext = GqlExecutionContext.create(context);
+        const gqlContext = GqlExecutionContext.create(context); //kirib kelayotgan request ni mantigini olish uchun
         this.logger.log(`${this.stringify(gqlContext.getContext().req.body)}`, 'REQUEST');
 
         /* (2) if there is error, error handling via GraphQL, and stop here */
@@ -28,16 +29,17 @@ export class LoggingInterceptor implements NestInterceptor {
         /* (3) if no Errors, giving Response below */
 
         return next.handle().pipe(
-        tap((context) => {
+        tap((context) => { // response context
             const responseTime = Date.now() - recordTime; // chop etish vaqti( hozrgi vaqtdan - kirib kelgan vaqt)
             this.logger.log(`${this.stringify(context)} - ${responseTime}ms \n\n`, 'RESPONSE'); // dolya sekund
         }), 
       );
 
     }
-    
-  }
 
+    return next.handle();
+  }
+  // context ni ichidagi malumotlarni qirqib olayabmiz 0 dan 75 gacha harflarni
   private stringify(context: ExecutionContext): string {
     return JSON.stringify(context).slice(0,75);
   }

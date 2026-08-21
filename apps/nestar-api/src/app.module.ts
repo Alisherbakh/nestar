@@ -13,15 +13,16 @@ import { T } from './libs/types/common';
   imports: [
     ConfigModule.forRoot(), // .env configuratsiyasi
     GraphQLModule.forRoot({ // graphql api integratsiyasi
-      driver: ApolloDriver,
+      driver: ApolloDriver, //"GraphQL so'rovlarini Apollo Server orqali qayta ishla" deyapsiz
       playground: true,
       uploads: false,
-      autoSchemaFile: true,
-      formatError: (error: T) => { // Global Error Handiling
+      autoSchemaFile: true, // schema.gql file ni hosil qilib beradi avto
+      formatError: (error: T) => { // Global Error Handiling, shows graphql errors
         const graphQLFormattedError = {
           code: error?.extensions.code  ,
           message: 
             error?.extensions?.exception?.response?.message || error?.extensions?.response?.message || error?.message,
+            // qanday error bolishidan qattiy nazar shu orqali message ni qabul qilamiz
         };
         console.log('GRAPHQL GLOBAL ERR:', graphQLFormattedError);
         return graphQLFormattedError;

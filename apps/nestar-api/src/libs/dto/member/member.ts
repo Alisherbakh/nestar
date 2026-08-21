@@ -1,26 +1,26 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { ObjectId } from "mongoose";
+import type { ObjectId } from "mongoose";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 
 @ObjectType()
 export class Member{
     @Field(() => String)
-    _id: ObjectId | undefined;
+    _id: ObjectId;
 
     @Field(() => MemberType) // graphQl ucchun type
-    memberType: MemberType | undefined;
+    memberType: MemberType;
 
     @Field(() => MemberStatus)
-    memberStatus: MemberStatus | undefined;
+    memberStatus: MemberStatus;
 
     @Field(() => String)
-    memberAuthType: MemberAuthType | undefined;
+    memberAuthType: MemberAuthType;
 
     @Field(() => String)
-    memberPhone: string | undefined;
+    memberPhone: string;
 
     @Field(() => String)
-    memberNick: string | undefined;
+    memberNick: string;
 
     memberPassword?: string;
 
@@ -28,7 +28,7 @@ export class Member{
     memberFullName?: string;
 
     @Field(() => String)
-    memberImage: string | undefined;
+    memberImage: string;
 
     @Field(() => String, {nullable: true}) // bolishi ham mumkun, bolmasligi ham
     memberAddress?: string;
