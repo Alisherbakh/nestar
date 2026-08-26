@@ -1,6 +1,8 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { Field, InputType, Int } from "@nestjs/graphql";
+import { IsIn, isNotEmpty, IsNotEmpty, IsOptional, Length, Min } from 'class-validator';
 import { MemberAuthType, MemberType } from "../../enums/member.enum";
+import { availableAgentSorts } from "../../config";
+import { Direction } from "../../enums/common.enum";
 
 
 // Kirib kelyotgan malumotlar uchun
@@ -47,4 +49,41 @@ export class LoginInput {
     memberPassword: string;
 
 
+}
+
+@InputType()
+class AiSearch {
+    @IsNotEmpty()
+    @Field(() => String, { nullable: true})
+    text?: string;
+}
+
+
+// getAgents
+@InputType()
+export class AgentsInquiry {
+    @IsNotEmpty()
+    @Min(1)
+    @Field(() => Int)
+    page: number;
+
+    @IsNotEmpty()
+    @Min(1)
+    @Field(() => Int)
+    limit: number;
+
+
+    @IsOptional()
+    @IsIn(availableAgentSorts) // arraydagi qiymatlarni qabul qiladi
+    @Field(() => String, { nullable: true})
+    sort?: string;
+
+    @IsOptional()
+    @Field(() => Direction, { nullable: true})
+    direction?: Direction; // yuqoridan  pastga , pastdan yuqoriga
+    
+    @IsNotEmpty()
+    @Field(() => AiSearch)
+    search: AiSearch;
+    
 }
