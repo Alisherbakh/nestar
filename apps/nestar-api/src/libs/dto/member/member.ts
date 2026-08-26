@@ -2,7 +2,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import type { ObjectId } from "mongoose";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 
-@ObjectType()
+@ObjectType() //@ts-ignore
 export class Member{
     @Field(() => String)
     _id: ObjectId;
@@ -37,46 +37,46 @@ export class Member{
     memberDesc?: string;
 
     @Field(() => Int)
-    memberProperties: number | undefined;
+    memberProperties: number;
 
      @Field(() => Int)
-    memberArticles: number | undefined;
+    memberArticles: number;
 
      @Field(() => Int)
-    memberFollowers: number | undefined;
+    memberFollowers: number;
 
      @Field(() => Int)
-    memberFollowings: number | undefined;
+    memberFollowings: number;
 
      @Field(() => Int)
-    memberPoints: number | undefined;
+    memberPoints: number ;
 
      @Field(() => Int)
-    memberLikes: number | undefined;
+    memberLikes: number ;
 
      @Field(() => Int)
-    memberViews: number | undefined;
+    memberViews: number ;
 
      @Field(() => Int)
-    memberComments: number | undefined;
+    memberComments: number ;
 
      @Field(() => Int)
-    memberRank: number | undefined;
+    memberRank: number ;
 
      @Field(() => Int)
-    memberWarnings: number | undefined;
+    memberWarnings: number ;
 
      @Field(() => Int)
-    memberBlocks: number | undefined;
+    memberBlocks: number ;
 
     @Field(() => Date, {nullable: true})
     deletedAt?: Date;
 
     @Field(() => Date)
-    createdAt: Date | undefined;
+    createdAt: Date ;
 
     @Field(() => Date)
-    updatedAt: Date | undefined;
+    updatedAt: Date ;
 
     @Field(() => String, { nullable: true})
     accessToken?: string;
