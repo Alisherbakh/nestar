@@ -7,15 +7,16 @@ import { tap } from 'rxjs/operators';
 export class LoggingInterceptor implements NestInterceptor {
 
     private readonly logger: Logger = new Logger();
-   // kirdi chiqdi malumotlarni terminalga chiroyli chiqarish mumkun Logger
+   // kirdi chiqdi malumotlarni terminalga chiroyli chiqarish uchun Logger orqali
 
                                                        // reactive functional programmingn(Promise ga oxshash mantig')
   public intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const recordTime = Date.now(); // kirib kelgan vaqti
-    const requestType = context.getType<GqlContextType>(); // kirib kelgan requestlarni typeni aniqlash uchun
+    const recordTime = Date.now(); // kirib kelgan request vaqti
+    const requestType = context.getType<GqlContextType>(); 
+                     // kirib kelgan requestlarni typeni aniqlash uchun rest api or GraphQl api
     
 
-    if (requestType === 'http'){
+    if (requestType === 'http'){ // http bolsa rest api boladi
         /*  Develop if needed */
         return next.handle();
     } else if (requestType === 'graphql'){
@@ -43,4 +44,4 @@ export class LoggingInterceptor implements NestInterceptor {
   private stringify(context: ExecutionContext): string {
     return JSON.stringify(context).slice(0,75);
   }
-}
+} //. graphQL api da context == object

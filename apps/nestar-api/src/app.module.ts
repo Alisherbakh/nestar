@@ -10,15 +10,15 @@ import { DatabaseModule } from './database/database.module';
 import { T } from './libs/types/common';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(), // .env configuratsiyasi
+  imports: [ // tashqaridan kerak narsalar olib kelinadi
+    ConfigModule.forRoot(), // .env configuratsiyasi, natijada main.ts da calling port
     GraphQLModule.forRoot({ // graphql api integratsiyasi
       driver: ApolloDriver, //"GraphQL so'rovlarini Apollo Server orqali qayta ishla" deyapsiz
-      playground: true,
+      playground: true, // brawserda playground ni yurgizib beradi, 
       uploads: false,
       autoSchemaFile: true, // schema.gql file ni hosil qilib beradi avto
-      formatError: (error: T) => { // Global Error Handiling, shows graphql errors
-        const graphQLFormattedError = {
+      formatError: (error: T) => { // Global Error Handiling integratsiya, formatError shows all types graphql errors
+        const graphQLFormattedError = { //umumiy hatolik yaratadigan tizim
           code: error?.extensions.code  ,
           message: 
             error?.extensions?.exception?.response?.message || error?.extensions?.response?.message || error?.message,
@@ -34,4 +34,4 @@ import { T } from './libs/types/common';
   controllers: [AppController],    // Health check mantiq lari yoziladi( hatosiz ishlayabdimi yoqmi project)
   providers: [AppService, AppResolver], // Rest Api
 })
-export class AppModule {}
+export class AppModule {} // loyiha markaziy bog'ichi

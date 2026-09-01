@@ -7,16 +7,16 @@ import { ObjectId } from "mongoose";
 // Kirib kelyotgan malumotlar uchun
 @InputType()
 export class ViewInput {
-    @IsNotEmpty()
+    @IsNotEmpty() // murojatchi
     @Field(() => String) //@ts-ignore
     memberId: ObjectId;
 
-    @IsNotEmpty()
+    @IsNotEmpty() // kimni kormoqchi
     @Field(() => String)//@ts-ignore
     viewRefId: ObjectId;
 
     @IsNotEmpty()
-    @Field(() => ViewGroup)
+    @Field(() => ViewGroup) // enums lardan oladi, member, article, property
     viewGroup: ViewGroup;
 
 }

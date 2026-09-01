@@ -1,6 +1,6 @@
 import { registerEnumType } from "@nestjs/graphql";
 
-export enum Message {
+export enum Message { // error common messages 
     SOMETHING_WENT_WRONG = "Something went wrong!",
     NO_DATA_FOUND = "No data is found!",
     CREATE_FAILED = "Created is failed!",
@@ -23,11 +23,11 @@ export enum Message {
     SELF_SUBSCRIPTION_DENIED = 'Self subscription is denied!', 
 }
 
-export enum Direction {
-    ASC = 1,
-    DESC = -1,
+export enum Direction { // sortingdagi direction uchun, member.input.ts da
+    ASC = 1, // osish
+    DESC = -1, // kamayish
 }
 
 registerEnumType(Direction, {
-    name: 'Direction',
+    name: 'Direction', // graphql ga registratsiya
 });

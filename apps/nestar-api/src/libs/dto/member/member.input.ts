@@ -5,7 +5,7 @@ import { availableAgentSorts } from "../../config";
 import { Direction } from "../../enums/common.enum";
 
 
-// Kirib kelyotgan malumotlar uchun
+// Kirib kelyotgan malumotlar uchun backend ga
 @InputType()
 export class MemberInput {
     @IsNotEmpty()
@@ -23,11 +23,11 @@ export class MemberInput {
     memberPhone: string;
 
     @IsOptional()
-    @Field(() => MemberType, { nullable: true}) // bolishi ham mumkun, bolmasligi ham
+    @Field(() => MemberType, { nullable: true}) // bolishi ham mumkun, bolmasligi ham, membertype enums dan birini oladi
     memberType?: MemberType;
 
     @IsOptional()
-    @Field(() => MemberAuthType, { nullable: true}) // bolishi ham mumkun, bolmasligi ham
+    @Field(() => MemberAuthType, { nullable: true}) // bolishi ham mumkun, bolmasligi ham, memberauthtype enums dan birini oladi
     memberAuthType?: MemberAuthType;
 
 
@@ -53,37 +53,37 @@ export class LoginInput {
 
 @InputType()
 class AiSearch {
-    @IsOptional()
+    @IsOptional() // searchingda agentni nomi bilan qidirish
     @Field(() => String, { nullable: true})
     text?: string;
 }
 
 
 // getAgents
-@InputType()
+@InputType() // agentlarni olish uchun Input type
 export class AgentsInquiry {
-    @IsNotEmpty()
+    @IsNotEmpty() // pagination uchun
     @Min(1)
     @Field(() => Int)
-    page: number;
+    page: number; // page raqami
 
     @IsNotEmpty()
     @Min(1)
     @Field(() => Int)
-    limit: number;
+    limit: number; // nechta card
 
 
     @IsOptional()
-    @IsIn(availableAgentSorts) // arraydagi qiymatlarni qabul qiladi
+    @IsIn(availableAgentSorts) // aynan arraydagi qiymatlarni qabul qiladi
     @Field(() => String, { nullable: true})
-    sort?: string;
+    sort?: string; // sorting qaysi 
 
     @IsOptional()
-    @Field(() => Direction, { nullable: true})
+    @Field(() => Direction, { nullable: true}) // common.ts enumdan olinyabdi
     direction?: Direction; // yuqoridan  pastga , pastdan yuqoriga
     
     @IsNotEmpty()
-    @Field(() => AiSearch)
+    @Field(() => AiSearch) // searchingda agentni nomi bilan qidirish
     search: AiSearch;
     
 }
@@ -95,21 +95,21 @@ class MISearch {
 
      @IsOptional()
      @Field(() => MemberStatus, { nullable: true})
-     memberStatus?: MemberStatus;
+     memberStatus?: MemberStatus; // search by member status
 
       @IsOptional()
      @Field(() => MemberType, { nullable: true})
-     memberType?: MemberType;
+     memberType?: MemberType; // search by membertype
 
 
 
     @IsOptional()
     @Field(() => String, { nullable: true})
-    text?: string;
+    text?: string; // search by text
 }
 
 
-// getAgents
+// search all types members
 @InputType()
 export class MembersInquiry {
     @IsNotEmpty()

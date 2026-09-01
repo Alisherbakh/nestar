@@ -4,14 +4,14 @@ import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [
+  imports: [ // JWT ni chaqirilyabdi token hosil qilish uchun
     HttpModule,
-    JwtModule.register({
-        secret: `${process.env.SECRET_TOKEN}`,
-        signOptions: { expiresIn: '30d'},
+    JwtModule.register({ // Option olib kelinyabdi
+        secret: `${process.env.SECRET_TOKEN}`, // secret token olib kelinyabdi .env dan
+        signOptions: { expiresIn: '30d'}, // token ni yashash muddati 30 kun
     })
   ],
   providers: [AuthService],
-  exports: [AuthService],
+  exports: [AuthService], // Step 1, auth serviceni tashqarida ishlatish uchun
 })
 export class AuthModule {}

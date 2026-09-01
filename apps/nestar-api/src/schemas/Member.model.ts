@@ -34,8 +34,8 @@ const MemberSchema = new Schema ({
 
     memberPassword: {
         type: String,
-        select: false,
-        required: true,
+        select: false, // by default uni qiymatini olib bermasin
+        required: true, // talab qilinadi
     },
 
     memberFullName: {
@@ -110,7 +110,8 @@ const MemberSchema = new Schema ({
         default: 0,
     },
 },
- { timestamps: true, collection: 'members'},
+ { timestamps: true, collection: 'members'}, // collection nomi
+ // by default created, updatedAT bolishi uchun timestamps
 );
 
 export default MemberSchema;

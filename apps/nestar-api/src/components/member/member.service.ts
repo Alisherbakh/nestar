@@ -13,20 +13,22 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 
 @Injectable()
 export class MemberService {
-    // memberSchema model integratsiyasi step-2
+    // memberSchema model integratsiyasi step-2                        // qaytaryotgan malumot Member
     constructor(@InjectModel('Member') private readonly memberModel: Model<Member>, 
-    private authService: AuthService,
-    private viewService: ViewService,
+    private authService: AuthService, // Step 3 auth serviceni chaqirib object hosil qilinyabdi 
+    private viewService: ViewService, // Step 3 view serviceni chaqirib object hosil qilinyabdi 
 ) {}
-   
+                                            // qaytaryotgan malumot Member
     public async signup(input: MemberInput): Promise<Member> {
        
         input.memberPassword = await this.authService.hashPassword(input.memberPassword);
-        try{
+        try{ // clientga errorlar korinmasligi uchun try catch qilindi,chiroyli error korsatish uchun
             const result = await this.memberModel.create(input);
            
+            // Authentication via Token
             result.accessToken = await this.authService.createToken(result);
-            
+            // kirib kelayotgan result dan accesstoken shakllantrilyabdi
+
             return result;
         } catch(err) {
             console.log('Error, Service.model:', err.message);
@@ -36,10 +38,10 @@ export class MemberService {
     }
 
     public async login(input: LoginInput): Promise<Member> {
-        const { memberNick, memberPassword } = input;
+        const { memberNick, memberPassword } = input; // distraction input
         const response: Member | null = await this.memberModel
              .findOne({ memberNick: memberNick})
-             .select('+memberPassword')
+             .select('+memberPassword') // forced call from database
              .exec();
 
         if(!response || !response.memberPassword || response.memberStatus === MemberStatus.DELETE) {
@@ -52,7 +54,7 @@ export class MemberService {
         const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
         if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
         response.accessToken = await this.authService.createToken(response);
-
+        
         return response;
     }
 
@@ -60,21 +62,22 @@ export class MemberService {
         // @ts-ignore
         const result: Member = await this.memberModel.findOneAndUpdate(
             {
-                _id: memberId,
-                memberStatus: MemberStatus.ACTIVE,
+                _id: memberId, // FIlter
+                memberStatus: MemberStatus.ACTIVE, 
             },
-            input,
-            { new: true},
+            input, // Update
+            { new: true}, // Option
         ).exec();
         if(!result) throw new InternalServerErrorException(Message.UPLOAD_FAILED);
-
+       // accessToken yangilanyabdi, sabab frontend da accessToken malumotlaridan foydalaniladi
+       // yangilanmasa Frontenddagi malumotlar ozgarmaydi
         result.accessToken = await this.authService.createToken(result);  // @ts-ignore
         return result;
     }
-
+   // memberId kim murojat qilayabdi, targetID kim ni kormoqchi
     public async getMember(memberId: ObjectId, targetId: ObjectId): Promise<Member> {
         const search: T = {
-            _id: targetId,
+            _id: targetId, // kimni malumotini kormoqchi, osha odamni id si
             memberStatus: {
                 $in: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
             },
@@ -83,17 +86,15 @@ export class MemberService {
         if (!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND); 
         
         if (memberId){
-            // record view
+            // record view. memberId> kim tomosha ql , viewRefId> kimni tomosha ql
             const viewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER};
             const newView = await this.viewService.recordView(viewInput);
             if (newView) {
                  // increase memberView
-                await this.memberModel
+                await this.memberModel    // inc = increase
                 .findOneAndUpdate(search, {$inc: {memberViews: 1}}, { new: true}).exec(); //@ts-ignore
                 targetMember.memberViews++;
             }
-
-            
            
         }
         //@ts-ignore
@@ -103,7 +104,7 @@ export class MemberService {
 
       public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
         const { text } = input.search;
-        const match: T = { MemberType: MemberType.AGENT, memberStatus: MemberStatus.ACTIVE};
+        const match: T = { memberType: MemberType.AGENT, memberStatus: MemberStatus.ACTIVE};
         const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC};
 
         if (text) match.memberNick = { $regex: new RegExp(text, 'i')};
@@ -112,10 +113,10 @@ export class MemberService {
         const result = await this.memberModel.aggregate([
             { $match: match},
             { $sort: sort},
-            {
-                $facet: {
+            {// facet bir nechta pipes larni ishlatishni imkonini beradi
+                $facet: { //nechta agent ni skip qilsin, limit inputni ichidagi limit
                     list: [{ $skip: (input.page -1) * input.limit}, { $limit: input.limit}],
-                    metaCounter: [{ $count: 'total'}],
+                    metaCounter: [{ $count: 'total'}], // agentlar umumiy soni
                 },
             },
         ]).exec();
@@ -126,15 +127,16 @@ export class MemberService {
 
 
 
-     public async getAllMemberByAdmin(input: MembersInquiry): Promise<Members> {
+     public async getAllMembersByAdmin(input: MembersInquiry): Promise<Members> {
 
         const { memberStatus, memberType, text } = input.search;
-        const match: T = {}; // hamma statusdagi members
+        const match: T = {}; // hamma statusdagi va turdagi members
         const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC};
         
         if (memberStatus) match.MemberStatus = memberStatus;
         if (memberType) match.memberType = memberType;
         if (text) match.memberNick = { $regex: new RegExp(text, 'i')};
+        // qidirish uchun katta kichik harf
         console.log('match', match);
 
         const result = await this.memberModel.aggregate([
@@ -154,8 +156,12 @@ export class MemberService {
 
 
 
-    public async updateMemberByAdminLength(input: MemberUpdate): Promise<Member> { //@ts-ignore
-        const result: Member = await this.memberModel.findOneAndUpdate({_id: input._id}, input, {new: true}).exec();
+    public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> { //@ts-ignore
+        const result: Member = await this.memberModel.findOneAndUpdate(
+            {_id: input._id},  //Filter
+            input, // update
+            {new: true}) // option
+            .exec();
         if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
         return result;
     }

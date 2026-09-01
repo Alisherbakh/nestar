@@ -2,13 +2,17 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import type { ObjectId } from "mongoose";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 
-@ObjectType() //@ts-ignore
+
+
+
+// backend dan frontend ga yuboriladigan dto
+@ObjectType() //@ts-ignore  // objecttype dto qurish uchun ichlatiladigan decorator
 export class Member{
     @Field(() => String)
     _id: ObjectId;
 
-    @Field(() => MemberType) // graphQl ucchun type
-    memberType: MemberType;
+    @Field(() => MemberType) // graphQl uchun yozildi
+    memberType: MemberType;  // typescriptga yozyabmiz 
 
     @Field(() => MemberStatus)
     memberStatus: MemberStatus;
@@ -21,7 +25,7 @@ export class Member{
 
     @Field(() => String)
     memberNick: string;
-
+   // graphQL paswordni clientga jonatmasligi kerak, shuning typescriptga yozyabmiz holos
     memberPassword?: string;
 
     @Field(() => String, {nullable: true}) // bolishi ham mumkun, bolmasligi ham
@@ -80,12 +84,12 @@ export class Member{
 
     @Field(() => String, { nullable: true})
     accessToken?: string;
-
+    // accessToken uchun, graphQL ga yuborilyabdi, signup va login uchun
    
 }
 
 
-@ObjectType()
+@ObjectType()  // agentlar royxati uchun
 export class TotalCounter {
     @Field(() => Int, {nullable: true})
     total: number;

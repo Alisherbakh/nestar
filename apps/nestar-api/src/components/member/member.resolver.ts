@@ -20,17 +20,19 @@ import { Message } from '../../libs/enums/common.enum';
 @Resolver()
 export class MemberResolver {
     constructor(private readonly memberService: MemberService) {}
+    // member service ni chaqirib olyabmiz, va obyect hosil qlindi   
 
-    @Mutation(() => Member)
+    // qaytaryotgan qiymat Member dto dagi maumotlar
+    @Mutation(() => Member)  // @Args param decorator
     public async signup(@Args('input') input: MemberInput): Promise<Member>{
-        
+        // kirib kelayotgan malumot dto MemberInput bolishi shart bolgan malumotlar
              console.log("Mutation: signup");
              return await this.memberService.signup(input);
         }
        
     
 
-     @Mutation(() => Member)
+     @Mutation(() => Member) // @Args param decorator
     public async login(@Args("input") input: LoginInput): Promise<Member>{
          
               console.log("Mutation: login");
@@ -38,14 +40,14 @@ export class MemberResolver {
         } 
     
 
-     @UseGuards(AuthGuard)
-     @Query(() => String)
+     @UseGuards(AuthGuard)// auth bolganmi yoqmi tekshiryabmiz
+     @Query(() => String) // @AuthMember param decortor, sabab update da authbolgan user info kerak
     public async checkAuth(@AuthMember("memberNick") memberNick: string): Promise<string>{
         console.log("Query: updateMember");
         console.log("memberNick:", memberNick);
         return `Hi ${memberNick}`;
     }
-
+    // metadata sifatida role lar yuklanyabdi
     @Roles(MemberType.USER, MemberType.AGENT)
     @UseGuards(AuthGuard)
      @Query(() => String)
@@ -56,20 +58,22 @@ export class MemberResolver {
     
     
   
-    @UseGuards(AuthGuard)
-     @Mutation(() => Member)
+    @UseGuards(AuthGuard) // auth bolganmi yoqmi tekshiryabmiz
+     @Mutation(() => Member) // qaytarilayotgan malumot
     public async updateMember(
         @Args('input') input: MemberUpdate, 
-        @AuthMember('_id') memberId: ObjectId,
+        @AuthMember('_id') memberId: ObjectId,// @AuthMember param decortor, sabab update da authbolgan user info kerak
     ): Promise<Member>{
         console.log("Mutation: updateMember"); // @ts-ignore
-        delete input._id;
+        delete input._id;// input dan kirib kelgan ID kerak emas, uni Authmember ID dan olamiz
+        // hacking ni oldini olish uchun
         return await this.memberService.updateMember(memberId, input);
     }
 
 
    
     @UseGuards(WithoutGuard)
+    // views lar uchun auth bolgan user bolsa, malumotini olib, views +1, login bolmagan bolsa ham hatosiz otkazib yuboramiz
      @Query(() => Member)
     public async getMember(@Args('memberId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<Member>{
         console.log("Query: getMember");
@@ -87,12 +91,12 @@ export class MemberResolver {
     /* ADMIN */
 
     // Authorization: ADMIN
-    @Roles(MemberType.ADMIN)
+    @Roles(MemberType.ADMIN) // metadata sifatida role lar yuklanyabdi
     @UseGuards(RolesGuard)
     @Query(() => Members)
-    public async getAllMemberByAdmin(@Args('input') input: MembersInquiry): Promise<Members> {
-        console.log('Query: getAllMemberByAdmin');
-        return await this.memberService.getAllMemberByAdmin(input);
+    public async getAllMembersByAdmin(@Args('input') input: MembersInquiry): Promise<Members> {
+        console.log('Query: getAllMembersByAdmin');
+        return await this.memberService.getAllMembersByAdmin(input);
     }
 
      // Authorization: ADMIN
@@ -109,26 +113,27 @@ export class MemberResolver {
 
     @UseGuards(AuthGuard)
 @Mutation((returns) => String)
-public async imageUploader(
+public async imageUploader( // kirib kelayotgan fileni, file nomi bilan olib, type graphQl
 	@Args({ name: 'file', type: () => GraphQLUpload })
-{ createReadStream, filename, mimetype }: FileUpload,
-@Args('target') target: String,
+{ createReadStream, filename, mimetype }: FileUpload, // destruction
+@Args('target') target: String,// target orqali, yuklanyotgan file ni qaysi manzilga saqlashi aytilyabdi
 ): Promise<string> {
 	console.log('Mutation: imageUploader');
 
 	if (!filename) throw new Error(Message.UPLOAD_FAILED);
-const validMime = validMimeTypes.includes(mimetype);
+const validMime = validMimeTypes.includes(mimetype);// file type tekshirilyabdi, config.ts
 if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
 
-const imageName = getSerialForImage(filename);
-const url = `uploads/${target}/${imageName}`;
+const imageName = getSerialForImage(filename); // random image name
+const url = `uploads/${target}/${imageName}`;// uploads folderni target manziliga save
 const stream = createReadStream();
+// stream orqali ochiladi
 
 const result = await new Promise((resolve, reject) => {
-	stream
+	stream// pipe ga hosil qilinggan url beriladi
 		.pipe(createWriteStream(url))
-		.on('finish', async () => resolve(true))
-		.on('error', () => reject(false));
+		.on('finish', async () => resolve(true))// success => resolve
+		.on('error', () => reject(false)); // error => reject
 });
 if (!result) throw new Error(Message.UPLOAD_FAILED);
 

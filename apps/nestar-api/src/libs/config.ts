@@ -1,5 +1,5 @@
 import { ObjectId } from 'bson';
-
+// agent larni sort qilish uchun
 export const availableAgentSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews', 'memberRank'];
 
 export const availableMemberSorts = ['createdAt', 'updatedAt', 'memberLikes', 'memberViews'];
@@ -20,8 +20,9 @@ export const availablePropertySorts = [
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 
+// yuklanyotgan file type shular bolsin
 export const validMimeTypes = ['image/png', 'image/jpg', 'image/jpeg'];
-export const getSerialForImage = (filename: string) => {
+export const getSerialForImage = (filename: string) => { // random  image name
 	const ext = path.parse(filename).ext;
 	return uuidv4() + ext;
 };
@@ -30,6 +31,7 @@ export const getSerialForImage = (filename: string) => {
 
 export const shapeIntoMongoObjectId = (target: any) => {
     return typeof target === "string" ? new ObjectId(target) : target
+	// kirib kelayotgan string id ni objectID ga ozgatirilyabdi
 };
 
 export const lookupMember = {

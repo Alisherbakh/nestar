@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 
-export interface T {
+export interface T { // common type yani any
     [key: string]: any;
 }
 

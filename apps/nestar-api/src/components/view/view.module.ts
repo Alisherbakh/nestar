@@ -6,6 +6,6 @@ import ViewSchema from '../../schemas/View.model';
 @Module({ // schema hosil qilinyabdi forFeature orqali
   imports: [MongooseModule.forFeature([{ name: "View", schema: ViewSchema}])],
   providers: [ViewService],
-  exports: [ViewService],
+  exports: [ViewService], // Step 1 tashqarida foydalanish uchun
 })
 export class ViewModule {}

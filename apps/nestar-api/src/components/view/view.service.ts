@@ -6,7 +6,7 @@ import { ViewInput } from '../../libs/dto/view/view.input';
 import { T } from '../../libs/types/common';
 
 @Injectable()
-export class ViewService {
+export class ViewService { // view schema model inject qilinyabdi
     constructor(@InjectModel('View') private readonly viewModel: Model<View> ) {}
 
 public async recordView(input: ViewInput): Promise<View | null>{
@@ -18,10 +18,13 @@ public async recordView(input: ViewInput): Promise<View | null>{
    
 }
 
+// view bolsa view di qaytaradi, bolmasa falsy qaytaradi
+// qiymat bolmasa view +1 , bolsa qoymaymiz
 private async checkViewExistence(input: ViewInput): Promise<View>{
     const { memberId, viewRefId} = input;
     const search: T = { memberId: memberId, viewRefId: viewRefId}; //@ts-ignore
     return await this.viewModel.findOne(search).exec();
+
 }
 
 }

@@ -112,5 +112,6 @@ const PropertySchema = new Schema(
 );
 
 PropertySchema.index({ propertyType: 1, propertyLocation: 1, propertyTitle: 1, propertyPrice: 1 }, { unique: true });
-
+ // bu yerdagi 4 ta malumot bir vaqtda uniqe bolish kerak
+ // qayta qayta userlar bir xil malumot kiritishni oldini olish maqsadida
 export default PropertySchema;

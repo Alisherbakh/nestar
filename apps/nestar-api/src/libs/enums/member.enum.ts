@@ -5,8 +5,9 @@ export enum MemberType {
     AGENT = 'AGENT',
     ADMIN = 'ADMIN',
 }
-registerEnumType(MemberType, { // graphQl uchun registered
+registerEnumType(MemberType, { 
     name: 'MemberType',
+    // graphQl uchun registered, typscript enums ni graphql da foydalanish uchun reg qilindi
 });
 
 export enum MemberStatus {
