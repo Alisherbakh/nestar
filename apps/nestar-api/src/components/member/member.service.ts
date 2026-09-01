@@ -171,7 +171,7 @@ export class MemberService {
         
         const { _id, targetKey, modifier } = input; //@ts-ignore
         return await this.memberModel
-            .findOneAndUpdate(
+            .findByIdAndUpdate(
                 _id,
                 {
                     $inc: { [targetKey]: modifier },
