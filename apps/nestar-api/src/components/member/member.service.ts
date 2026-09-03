@@ -13,11 +13,14 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
+import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
 
 @Injectable()
 export class MemberService {
     // memberSchema model integratsiyasi step-2                        // qaytaryotgan malumot Member
-    constructor(@InjectModel('Member') private readonly memberModel: Model<Member>, 
+    constructor(
+        @InjectModel('Member') private readonly memberModel: Model<Member>, 
+        @InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
     private authService: AuthService, // Step 3 auth serviceni chaqirib object hosil qilinyabdi 
     private viewService: ViewService, // Step 3 view serviceni chaqirib object hosil qilinyabdi 
     private likeService: LikeService,
@@ -104,11 +107,19 @@ export class MemberService {
             const likeInput = { memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };//@ts-ignore
             targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
 
-            // meFollowed
+            // meFollowed 
+            //@ts-ignore
+            targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
         }
         //@ts-ignore
         return targetMember;
     }
+
+     private async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
+        const result = await this.followModel.findOne({ followingId: followingId, followerId: followerId }).exec();
+        return result ? [{ followerId: followerId, followingId: followingId, myFollowing: true }] : [];
+    }
+
 
 
       public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
@@ -194,6 +205,7 @@ export class MemberService {
     }
 
 
+   
     public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
         // data staticni yangilash uchun
         const { _id, targetKey, modifier } = input; //@ts-ignore
