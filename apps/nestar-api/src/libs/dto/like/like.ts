@@ -4,10 +4,10 @@ import { ObjectId } from 'mongoose';
 
 @ObjectType()
 export class MeLiked {
-	@Field(() => String)
+	@Field(() => String)//@ts-ignore
 	memberId: ObjectId;
 
-	@Field(() => String)
+	@Field(() => String)//@ts-ignore
 	likeRefId: ObjectId;
 
 	@Field(() => Boolean)
@@ -16,16 +16,16 @@ export class MeLiked {
 
 @ObjectType()
 export class Like {
-	@Field(() => String)
+	@Field(() => String)//@ts-ignore
 	_id: ObjectId;
 
 	@Field(() => LikeGroup)
 	likeGroup: LikeGroup;
 
-	@Field(() => String)
+	@Field(() => String)//@ts-ignore
 	likeRefId: ObjectId;
 
-	@Field(() => String)
+	@Field(() => String)//@ts-ignore
 	memberId: ObjectId;
 
 	@Field(() => Date)
