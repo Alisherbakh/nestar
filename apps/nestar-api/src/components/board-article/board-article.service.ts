@@ -26,8 +26,8 @@ export class BoardArticleService {
         try { // database ga aloqador hato bolsa , handle qiladi
             const result = await this.boardArticleModel.create(input);
             await this.memberService.memberStatsEditor({
-                _id: memberId,
-                targetKey: 'memberArticles',
+                _id: memberId, // member ID
+                targetKey: 'memberArticles', // db dagi field
                 modifier: 1, // acticle statiskni +1
             });
 
@@ -72,7 +72,7 @@ export class BoardArticleService {
             .exec();
         if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
 
-        if (articleStatus === BoardArticleStatus.DELETE) {
+        if (articleStatus === BoardArticleStatus.DELETE) {// delete bolsa, article soni -1
             await this.memberService.memberStatsEditor({
                 _id: memberId,
                 targetKey: 'memberArticles',
@@ -88,27 +88,28 @@ export class BoardArticleService {
         const match: T = { articleStatus: BoardArticleStatus.ACTIVE };
         const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
 
-        if (articleCategory) match.articleCategory = articleCategory;
-        if (text) match.articleTitle = { $regex: new RegExp(text, 'i') };
-        if (input.search?.memberId) {
+        if (articleCategory) match.articleCategory = articleCategory;// catigory kiritilgan bolsa qoshib qoyyabmiz
+        if (text) match.articleTitle = { $regex: new RegExp(text, 'i') };// text bolsa qoshib qoyyabmiz
+        if (input.search?.memberId) {// aynan memberni articleni kormoqchi bolsak, ham bolar ekan kiritib
             match.memberId = shapeIntoMongoObjectId(input.search.memberId);
         }
         console.log('match:', match);
 
         const result = await this.boardArticleModel
             .aggregate([
-                { $match: match },
-                { $sort: sort },
+                { $match: match },//Maqolalarni belgilangan shartlar bo'yicha saralab (filtrlab) oladi (masalan, faqat faol maqolalarni).
+                { $sort: sort },//Topilgan maqolalarni ko'rsatilgan tartibda joylashtiradi (masalan, eng yangilari birinchi).
                 {
-                    $facet: {
+                    $facet: {//Eng asosiy joyi shu. U ma'lumotlarni parallel ravishda 2 ta alohida yo'nalishga bo'lib beradi:
                         list: [
-                            { $skip: (input.page - 1) * input.limit },
-                            { $limit: input.limit },
+                            { $skip: (input.page - 1) * input.limit },//Sahifalash (pagination) uchun oldingi sahifalardagi maqolalarni o'tkazib yuboradi.
+                            { $limit: input.limit },//Bitta sahifada nechta maqola ko'rinishini belgilaydi (masalan, 10 ta)
                             // meLiked
-                            lookupMember,
+                            lookupMember,// Har bir maqolaga uni yozgan muallif (member) ma'lumotlarini birlashtirib qo'shadi.
                             { $unwind: '$memberData' },
                         ],
                         metaCounter: [{ $count: 'total' }],
+                        //Filtrga tushgan barcha maqolalarning umumiy sonini hisoblaydi (sahifalashga ajratmasdan).
                     },
                 },
             ])
@@ -160,9 +161,9 @@ export class BoardArticleService {
 
         if (articleStatus === BoardArticleStatus.DELETE) {
             await this.memberService.memberStatsEditor({
-                _id: result.memberId,
+                _id: result.memberId, // member ID creater
                 targetKey: 'memberArticles',
-                modifier: -1,
+                modifier: -1, // soni -1
             });
         }
 
@@ -192,8 +193,8 @@ export class BoardArticleService {
         const { _id, targetKey, modifier } = input; //@ts-ignore
         return await this.boardArticleModel
             .findByIdAndUpdate(
-                _id,
-                { $inc: { [targetKey]: modifier } },
+                _id, // memberID
+                { $inc: { [targetKey]: modifier } },//ozgartrilayotgan Target, modifyer yangi qiymatga change
                 {
                     new: true,
                 },

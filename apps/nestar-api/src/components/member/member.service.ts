@@ -168,7 +168,7 @@ export class MemberService {
 
 
     public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
-        
+        // data staticni yangilash uchun
         const { _id, targetKey, modifier } = input; //@ts-ignore
         return await this.memberModel
             .findByIdAndUpdate(

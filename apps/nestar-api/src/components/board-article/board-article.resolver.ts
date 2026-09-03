@@ -81,7 +81,7 @@ export class BoardArticleResolver {
         @AuthMember('_id') memberId: ObjectId,
     ): Promise<BoardArticle> {
         console.log('Mutation: updateBoardArticleByAdmin');
-        input._id = shapeIntoMongoObjectId(input._id);
+        input._id = shapeIntoMongoObjectId(input._id);// article ID
         return await this.boardArticleService.updateBoardArticleByAdmin(input);
     }
 

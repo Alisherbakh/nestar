@@ -34,7 +34,7 @@ export class CommentResolver {
         @AuthMember('_id') memberId: ObjectId,
     ): Promise<Comment> {
         console.log('Mutation: updateComment');
-        input._id = shapeIntoMongoObjectId(input._id);
+        input._id = shapeIntoMongoObjectId(input._id); // comment id
         return await this.commentService.updateComment(memberId, input);
     }
 
@@ -45,7 +45,7 @@ export class CommentResolver {
         @AuthMember('_id') memberId: ObjectId,
     ): Promise<Comments> {
         console.log('Query: getComments');
-        input.search.commentRefId = shapeIntoMongoObjectId(input.search.commentRefId);
+        input.search.commentRefId = shapeIntoMongoObjectId(input.search.commentRefId);// pointed article id
         return await this.commentService.getComments(memberId, input);
         
     }
@@ -58,7 +58,7 @@ export class CommentResolver {
     @Mutation((returns) => Comment)
     public async removeCommentByAdmin(@Args('commentId') input: string): Promise<Comment> {
         console.log('Mutation: removeCommentByAdmin');
-        const commentId = shapeIntoMongoObjectId(input);
+        const commentId = shapeIntoMongoObjectId(input); // comment ID
         return await this.commentService.removeCommentByAdmin(commentId);
     }
 }
