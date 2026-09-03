@@ -3,6 +3,7 @@ import type { ObjectId } from "mongoose";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 import { PropertyLocation, PropertyStatus, PropertyType } from "../../enums/property.enum";
 import { Member, TotalCounter } from "../member/member";
+import { MeLiked } from "../like/like";
 
 @ObjectType() //@ts-ignore
 export class Property{
@@ -80,8 +81,13 @@ export class Property{
 
    /** from agregation **/
 
+    @Field(() => [MeLiked], { nullable: true})
+       meLiked?: MeLiked[];
+
    @Field(() => Member, { nullable: true})
    memberDate?: Member;
+
+   
 
 
 }

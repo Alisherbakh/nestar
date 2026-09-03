@@ -1,6 +1,7 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import type { ObjectId } from "mongoose";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
+import { MeLiked } from "../like/like";
 
 
 
@@ -86,6 +87,9 @@ export class Member{
     accessToken?: string;
     // accessToken uchun, graphQL ga yuborilyabdi, signup va login uchun
    
+    /** from aggregation **/
+    @Field(() => [MeLiked], { nullable: true})
+    meLiked?: MeLiked[];
 }
 
 

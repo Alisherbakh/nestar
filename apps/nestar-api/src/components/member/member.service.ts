@@ -99,7 +99,12 @@ export class MemberService {
                 .findOneAndUpdate(search, {$inc: {memberViews: 1}}, { new: true}).exec(); //@ts-ignore
                 targetMember.memberViews++;
             }
-           
+
+            // meLiked
+            const likeInput = { memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER };//@ts-ignore
+            targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+
+            // meFollowed
         }
         //@ts-ignore
         return targetMember;
