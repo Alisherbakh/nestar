@@ -91,8 +91,8 @@ export class MemberResolver {
     @UseGuards(AuthGuard)
     @Mutation(() => Member)
     public async likeTargetMember(
-        @Args('memberId') input: string,
-        @AuthMember('_id') memberId: ObjectId,
+        @Args('memberId') input: string, // qaysi memberga like bosmoqchimiz
+        @AuthMember('_id') memberId: ObjectId, // murojatchi ning ID
     ): Promise<Member> {
         console.log('Mutation: likeTargetMember');
         const likeRefId = shapeIntoMongoObjectId(input);

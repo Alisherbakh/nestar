@@ -11,9 +11,9 @@ export class LikeInput {
 
 	@IsNotEmpty()
 	@Field(() => String)//@ts-ignore
-	likeRefId: ObjectId;
+	likeRefId: ObjectId;// nimaga like bosyabdi
 
 	@IsNotEmpty()
 	@Field(() => LikeGroup)
-	likeGroup: LikeGroup;
+	likeGroup: LikeGroup; // property , article, member
 }

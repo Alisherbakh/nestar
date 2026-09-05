@@ -9,7 +9,7 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { PropertyStatus } from '../../libs/enums/property.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 import { MemberService } from '../member/member.service';
 import { ViewService } from '../view/view.service';
 import { LikeService } from '../like/like.service';
@@ -126,6 +126,7 @@ export class PropertyService {
               { $skip: (input.page - 1) * input.limit },
               { $limit: input.limit },
               // meLiked
+              lookupAuthMemberLiked(memberId),
               lookupMember,
               { $unwind: '$memberData' },
             ],
@@ -210,8 +211,8 @@ export class PropertyService {
     if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
     const input: LikeInput = {
-      memberId: memberId,
-      likeRefId: likeRefId,
+      memberId: memberId,// kim bosyabdi
+      likeRefId: likeRefId, // nimaga bosyabdi
       likeGroup: LikeGroup.PROPERTY,
     };
 

@@ -3,7 +3,7 @@ import { LikeGroup } from '../../enums/like.enum';
 import { ObjectId } from 'mongoose';
 
 @ObjectType()
-export class MeLiked {
+export class MeLiked { // murojatchi aynan shunga like bosganmi yoqmi
 	@Field(() => String)//@ts-ignore
 	memberId: ObjectId;
 
@@ -15,7 +15,7 @@ export class MeLiked {
 }
 
 @ObjectType()
-export class Like {
+export class Like { // like hosil bolganda hosil boladigan narsalar
 	@Field(() => String)//@ts-ignore
 	_id: ObjectId;
 

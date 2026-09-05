@@ -34,6 +34,11 @@ export const shapeIntoMongoObjectId = (target: any) => {
 	// kirib kelayotgan string id ni objectID ga ozgatirilyabdi
 };
 
+
+
+
+
+
 export const lookupMember = {
 	$lookup: {
 		from: 'members',// members kolleksiyasi bilan birlashtirish (JOIN).
@@ -59,5 +64,36 @@ export const lookupFollowerData = {
 		foreignField: '_id',
 		as: 'followerData',
 	},
+};
+
+export const lookupAuthMemberLiked = <T>(memberId: T, targetRefId: string = '$_id') => {
+	return {
+		$lookup: {
+			from: 'likes',
+			let: {
+				localLikeRefId: targetRefId,
+				localMemberId: memberId,
+				localMyFavorite: true,
+			},
+			pipeline: [
+				{
+					$match: {
+						$expr: {
+							$and: [{ $eq: ['$likeRefId', '$$localLikeRefId'] }, { $eq: ['$memberId', '$$localMemberId'] }],
+						},
+					},
+				},
+				{
+					$project: {
+						_id: 0,
+						memberId: 1,
+						likeRefId: 1,
+						myFavorite: '$$localMyFavorite',
+					},
+				},
+			],
+			as: 'meLiked',
+		},
+	};
 };
 
