@@ -10,7 +10,7 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { BoardArticleStatus } from '../../libs/enums/board-article.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { StatisticModifier, T } from '../../libs/types/common';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
@@ -111,6 +111,7 @@ export class BoardArticleService {
                             { $skip: (input.page - 1) * input.limit },//Sahifalash (pagination) uchun oldingi sahifalardagi maqolalarni o'tkazib yuboradi.
                             { $limit: input.limit },//Bitta sahifada nechta maqola ko'rinishini belgilaydi (masalan, 10 ta)
                             // meLiked
+                            lookupAuthMemberLiked(memberId),
                             lookupMember,// Har bir maqolaga uni yozgan muallif (member) ma'lumotlarini birlashtirib qo'shadi.
                             { $unwind: '$memberData' },
                         ],

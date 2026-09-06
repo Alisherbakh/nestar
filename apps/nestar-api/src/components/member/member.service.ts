@@ -14,6 +14,7 @@ import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
 import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
+import { lookupAuthMemberLiked } from '../../libs/config';
 
 @Injectable()
 export class MemberService {
@@ -135,7 +136,9 @@ export class MemberService {
             { $sort: sort},
             {// facet bir nechta pipes larni ishlatishni imkonini beradi
                 $facet: { //nechta agent ni skip qilsin, limit inputni ichidagi limit
-                    list: [{ $skip: (input.page -1) * input.limit}, { $limit: input.limit}],
+                    list: [{ $skip: (input.page -1) * input.limit}, { $limit: input.limit},
+                        lookupAuthMemberLiked(memberId),
+                    ],
                     metaCounter: [{ $count: 'total'}], // agentlar umumiy soni
                 },
             },
