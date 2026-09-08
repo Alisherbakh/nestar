@@ -13,6 +13,7 @@ import FollowSchema from '../../schemas/Follow.model';
   imports: [
   MongooseModule.forFeature([{ name: 'Member', schema: MemberSchema }]), 
   MongooseModule.forFeature([{name: 'Follow',schema: FollowSchema }]),
+  //  MemberService foydalanuvchilar o'rtasidagi obuna holatini tekshirish (checkSubscription()) uchun Follow modelidan foydalanadi.
   AuthModule, // Step 2 auth serviceni memberda ishlatish uchun import qilindi
   ViewModule, // Step 2 view service ni memberda ishlatish uchun import qilindi
   LikeModule,

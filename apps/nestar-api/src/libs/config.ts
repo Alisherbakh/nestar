@@ -86,40 +86,46 @@ export const lookupVisit = {
 
 
 
-export const lookupAuthMemberLiked = <T>(memberId: T, targetRefId: string = '$_id') => {
+export const lookupAuthMemberLiked = <T>(
+	memberId: T, // murojatchini id si
+    targetRefId: string = '$_id' 
+	// targeted property id, $_id bu skip va limitda hosil bolgan property id sini qabul qilish uchun schema modeldan hosil bolgan, default qoyilyabdi
+) => {
 	return {
 		$lookup: {
-			from: 'likes',
-			let: {
-				localLikeRefId: targetRefId,
-				localMemberId: memberId,
-				localMyFavorite: true,
+			from: 'likes', // qaysi collectiondan 
+			let: { // search uchun complex lookup query
+				localLikeRefId: targetRefId, // manosi $_id bu yerda
+				localMemberId: memberId, // murojartchi
+				localMyFavorite: true, // like bosganmi yoqmi 
 			},
 			pipeline: [
 				{
 					$match: {
-						$expr: {
-							$and: [{ $eq: ['$likeRefId', '$$localLikeRefId'] }, { $eq: ['$memberId', '$$localMemberId'] }],
+						$expr: { // expression
+							$and: [ // solishtirish mantigi, $eq: teng degani
+								{ $eq: ['$likeRefId', '$$localLikeRefId'] },// local variable ishlatish uchun $$
+								 { $eq: ['$memberId', '$$localMemberId'] }],
 						},
 					},
 				},
-				{
+				{ // pipline da hosil bolgan mantiqni projection qilamiz
 					$project: {
-						_id: 0,
-						memberId: 1,
-						likeRefId: 1,
-						myFavorite: '$$localMyFavorite',
+						_id: 0, // id ni olib bermasin, id default 1 ga teng, like id si
+						memberId: 1, // datasate default 0, 1 bolsa bolsin bu member id
+						likeRefId: 1, // datasate default 0, 1 bolsa bolsin bu property id
+						myFavorite: '$$localMyFavorite', // like bosgan bolsa true, bolmasam false
 					},
 				},
 			],
-			as: 'meLiked',
+			as: 'meLiked', // shu nom bilan saqlayabmiz malumotni
 		},
 	};
 };
 
 interface LookupAuthMemberFollowed<T> {
 	followerId: T;
-	followingId: string;
+	followingId: string;//chunki 2 qismi string korinishida namoyon boladi
 }
 
 export const lookupAuthMemberFollowed = <T>(input: LookupAuthMemberFollowed<T>) => {
@@ -127,9 +133,9 @@ export const lookupAuthMemberFollowed = <T>(input: LookupAuthMemberFollowed<T>) 
 	return {
 		$lookup: {
 			from: 'follows',
-			let: {
+			let: { // complex lookup query search uchun
 				localFollowerId: followerId,
-				localFollowingId: followingId,
+				localFollowingId: followingId, // string
 				localMyFavorite: true,
 			},
 			pipeline: [
@@ -142,7 +148,7 @@ export const lookupAuthMemberFollowed = <T>(input: LookupAuthMemberFollowed<T>) 
 				},
 				{
 					$project: {
-						_id: 0,
+						_id: 0,// like id si
 						followerId: 1,
 						followingId: 1,
 						myFollowing: '$$localMyFavorite',

@@ -44,7 +44,7 @@ export class LikeService {
 
 	public async getFavoriteProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
 		const { page, limit } = input;
-		const match: T = { likeGroup: LikeGroup.PROPERTY, memberId: memberId };
+		const match: T = { likeGroup: LikeGroup.PROPERTY, memberId: memberId };// memberId biz
 
 		const data: T = await this.likeModel
 			.aggregate([
@@ -52,19 +52,22 @@ export class LikeService {
 				{ $sort: { updatedAt: -1 } },// eng oxirgi qoyilgan like asosida sorting
 				{
 					$lookup: {
-						from: 'properties',
-						localField: 'likeRefId',
-						foreignField: '_id',
-						as: 'favoriteProperty',
+						from: 'properties', // collection
+						localField: 'likeRefId', // likeRefId ni qbul qilib, bu property id si
+						foreignField: '_id', // shu yerdan id ga teng bolgan qiymatni  izlaymiz
+						as: 'favoriteProperty', // save data as this name
 					},
 				},
 				{ $unwind: '$favoriteProperty' },
+				// qabul qilingan malumotlarni arraydan tashqariga chiqarib berishini aytayabmiz, 
+				// qaysi propertyga like bosilgani har bir property
 				{
 					$facet: {
 						list: [
 							{ $skip: (page - 1) * limit }, 
-							{ $limit: limit }, lookupFavorite,
+							{ $limit: limit }, lookupFavorite, // in config
 							{ $unwind: '$favoriteProperty.memberData' }
+				//favoriteProperty ni ichidagi, aytan shu propertyni hosil qilgan agentni malumotlarini olish
 						],
 						metaCounter: [{ $count: 'total'}],
 					},
@@ -72,10 +75,11 @@ export class LikeService {
 			])
 			.exec();
 
-		const result: Properties = { list: [], metaCounter: data[0].metaCounter};
+		const result: Properties = { list: [], metaCounter: data[0].metaCounter};// metacounter hosil qilindi
 		result.list = data[0].list.map((ele) => ele.favoriteProperty);
+		// listni ichidagi, har bir malumotni olib iteration qilinyabdi, va bizga aynan favoriteProperty ni olib berayabdi
 		
 		//@ts-ignore
 		return result;
 	}
-}
+} 

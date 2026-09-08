@@ -41,10 +41,10 @@ public async getVisitedProperties(memberId: ObjectId, input: OrdinaryInquiry): P
         { $sort: { updatedAt: -1 } },
         {
           $lookup: {
-            from: 'properties',
-            localField: 'viewRefId',
-            foreignField: '_id',
-            as: 'visitedProperty',
+            from: 'properties', // collectiondan
+            localField: 'viewRefId', // refID ni
+            foreignField: '_id', // shu id ga teng holatini izlaydi
+            as: 'visitedProperty', // shu nom bilan saqlaydi
           },
         },
         { $unwind: '$visitedProperty' },
@@ -55,6 +55,7 @@ public async getVisitedProperties(memberId: ObjectId, input: OrdinaryInquiry): P
               { $limit: limit },
               lookupVisit,
               { $unwind: '$visitedProperty.memberData' },
+    //visitedProperty ni ichidagi, aytan shu propertyni hosil qilgan agentni malumotlarini olish
             ],
             metaCounter: [{ $count: 'total' }],
           },
@@ -62,8 +63,9 @@ public async getVisitedProperties(memberId: ObjectId, input: OrdinaryInquiry): P
       ])
       .exec();
 
-    const result: Properties = { list: [], metaCounter: data[0].metaCounter };
+    const result: Properties = { list: [], metaCounter: data[0].metaCounter };// metacounter hosil qilinyabdi
     result.list = data[0].list.map((ele) => ele.visitedProperty);
+    // listni ichidagi, har bir malumotni olib iteration qilinyabdi, va bizga aynan favoriteProperty ni olib berayabdi
 
     return result;
 }

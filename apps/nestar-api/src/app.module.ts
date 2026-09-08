@@ -8,6 +8,7 @@ import { AppResolver } from './app.resolver';
 import { ComponentsModule } from './components/components.module';
 import { DatabaseModule } from './database/database.module';
 import { T } from './libs/types/common';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [ // tashqaridan kerak narsalar olib kelinadi
@@ -29,7 +30,7 @@ import { T } from './libs/types/common';
       }
     }),
     ComponentsModule, // component model calling Http
-    DatabaseModule,   // database calling.       TCP
+    DatabaseModule, SocketModule,   // database calling.       TCP
   ],
   controllers: [AppController],    // Health check mantiq lari yoziladi( hatosiz ishlayabdimi yoqmi project)
   providers: [AppService, AppResolver], // Rest Api

@@ -70,7 +70,7 @@ export class PropertyResolver {
 
   @UseGuards(AuthGuard)
   @Query((returns) => Properties)
-  public async getFavorites(
+  public async getFavorites( //biz tomonimizdan yoqtirilgan property 
     @Args('input') input: OrdinaryInquiry,
     @AuthMember('_id') memberId: ObjectId,
   ): Promise<Properties> {

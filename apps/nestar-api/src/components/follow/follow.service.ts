@@ -76,7 +76,7 @@ export class FollowService {
               { $skip: (page - 1) * limit },
               { $limit: limit },
               // meLiked
-              lookupAuthMemberLiked(memberId, "$followingId"),
+              lookupAuthMemberLiked(memberId, "$followingId"),//database dan kelgan malumot, followingid ni shunday olamiz
               // meFollowed
               lookupAuthMemberFollowed({
                 followerId: memberId,
@@ -112,7 +112,7 @@ export class FollowService {
               { $skip: (page - 1) * limit },
               { $limit: limit },
               // meLiked
-              lookupAuthMemberLiked(memberId, "$followerId"),
+              lookupAuthMemberLiked(memberId, "$followerId"),//database dan kelgan malumot, followerid ni shunday olamiz
               // meFollowed
               lookupAuthMemberFollowed({
                 followerId: memberId,
