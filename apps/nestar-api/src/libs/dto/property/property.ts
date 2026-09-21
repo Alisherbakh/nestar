@@ -23,7 +23,7 @@ export class Property{
     propertyAddress: string;
 
     @Field(() => String)
-    propertyTitles: string;
+    propertyTitle: string;
 
     @Field(() => Number)
     propertyPrice: number;
@@ -85,7 +85,7 @@ export class Property{
        meLiked?: MeLiked[];
 
    @Field(() => Member, { nullable: true})
-   memberDate?: Member;
+   memberData?: Member;
 
    
 
