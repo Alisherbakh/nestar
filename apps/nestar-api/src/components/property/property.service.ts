@@ -160,13 +160,13 @@ export class PropertyService {
       text,
     } = input.search;
     if (memberId) match.memberId = shapeIntoMongoObjectId(memberId);
-    if (locationList) match.propertyLocation = { $in: locationList };
-    //tanlangan bir nechta qiymatlardan kamida biriga mos keluvchi ma'lumotlarni qidirish uchun $in ishlatiladi 
-    if (roomsList) match.propertyRooms = { $in: roomsList };
-    if (bedsList) match.propertyBeds = { $in: bedsList };
-    if (typeList) match.propertyType = { $in: typeList };
+    if (locationList && locationList.length) match.propertyLocation = { $in: locationList };
+    //tanlangan bir nechta qiymatlardan kamida biriga mos keluvchi ma'lumotlarni qidirish uchun $in ishlatiladi
+    if (roomsList && roomsList.length) match.propertyRooms = { $in: roomsList };
+    if (bedsList && bedsList.length) match.propertyBeds = { $in: bedsList };
+    if (typeList && typeList.length) match.propertyType = { $in: typeList };
 
-    //narx, sana yoki maydonning boshlang'ich ($gte — katta yoki teng) 
+    //narx, sana yoki maydonning boshlang'ich ($gte — katta yoki teng)
     // va oxirgi ($lte — kichik yoki teng) oraliq chegaralarini belgilaydi.
     if (pricesRange) match.propertyPrice = { $gte: pricesRange.start, $lte: pricesRange.end };
     if (periodsRange) match.createdAt = { $gte: periodsRange.start, $lte: periodsRange.end };
@@ -177,12 +177,12 @@ export class PropertyService {
     if (options) {
       match['$or'] = options.map((ele) => {
         return { [ele]: true };
-        //tanlangan qo'shimcha qulayliklarni (masalan: wifi: true, parking: true) 
+        //tanlangan qo'shimcha qulayliklarni (masalan: wifi: true, parking: true)
         // $or mantiqiy operatori orqali kamida bittasi true bo'lishi kerak degan shart bilan qo'shadi.
       });
     }
   }
- // biz tomonimizdan yoqtirilgan property 
+ // biz tomonimizdan yoqtirilgan property
   public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
     return await this.likeService.getFavoriteProperties(memberId, input);
   }
