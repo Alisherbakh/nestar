@@ -52,6 +52,6 @@ export class MemberUpdate {
     @Field(() => String, { nullable: true}) // bolishi ham mumkun, bolmasligi ham
     memberDesc?: string;
 
-    deleteAt?: Date;
+    deletedAt?: Date;
 
 }
